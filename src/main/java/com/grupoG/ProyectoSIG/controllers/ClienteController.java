@@ -15,11 +15,23 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 public class ClienteController {
+
     @Autowired
     private ClienteService clienteService;
 
     @GetMapping
     public ResponseEntity<List<Cliente>> listarClientes(){
         return ResponseEntity.ok(clienteService.findAll());
+    }
+
+    @GetMapping("/existeClienteEmail")
+    public ResponseEntity<?> existeClienteEmail (String email){
+
+        try {
+            clienteService.getClienteByEmail(email);
+            return ResponseEntity.ok(clienteService.getClienteByEmail(email));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("El cliente no existe");
+        }
     }
 }

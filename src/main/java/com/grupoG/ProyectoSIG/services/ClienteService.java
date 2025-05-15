@@ -27,4 +27,13 @@ public class ClienteService {
     public Optional<Cliente> getClienteById(Long id) {
         return clienteRepository.findById(id);
     }
+
+    public Optional<Cliente> getClienteByEmail( String email){
+        Optional<Cliente> existCliente = clienteRepository.findByEmail(email);
+
+        if (existCliente.isEmpty()){
+            throw new IllegalArgumentException("El cliente no existe");
+        }
+        return existCliente;
+    }
 }
