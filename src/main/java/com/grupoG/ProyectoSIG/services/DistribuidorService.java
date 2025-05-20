@@ -14,14 +14,21 @@ public class DistribuidorService {
     @Autowired
     private DistribuidorRepository distribuidorRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public <S extends com.grupoG.ProyectoSIG.models.Distribuidor> S save(S entity) {
-        //entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         return distribuidorRepository.save(entity);
     }
 
     public List<Distribuidor> findAll(){
         return distribuidorRepository.findAll();
+    }
+
+    public Optional<Distribuidor> findById(long id){
+        return distribuidorRepository.findById(id);
     }
 
     public Optional<Distribuidor> getClienteById(Long id) {

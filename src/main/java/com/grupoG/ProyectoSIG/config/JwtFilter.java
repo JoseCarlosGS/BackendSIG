@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.config;
 
+import com.grupoG.ProyectoSIG.services.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +17,10 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
-    public JwtFilter(JwtUtil jwtUtil) {
+    private final CustomUserDetailsService userDetailsService;
+    public JwtFilter(JwtUtil jwtUtil, CustomUserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
-        //this.userDetailsService = userDetailsService;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
@@ -33,15 +35,15 @@ public class JwtFilter extends OncePerRequestFilter {
             username = jwtUtil.extractUsername(token);
         }
 
-//        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-//            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//            if (jwtUtil.validateToken(token, userDetails)) {
-//                var authToken = new UsernamePasswordAuthenticationToken(
-//                        userDetails, null, userDetails.getAuthorities());
-//                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-//                SecurityContextHolder.getContext().setAuthentication(authToken);
-//            }
-//        }
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtUtil.validateToken(token, userDetails)) {
+                var authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
         chain.doFilter(request, response);
     }
 }

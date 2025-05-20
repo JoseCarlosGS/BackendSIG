@@ -13,15 +13,20 @@ import java.util.Optional;
 public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public <S extends Cliente> S save(S entity) {
-        //entity.setPassword(passwordEncoder.encode(entity.getPassword()));
+        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         return clienteRepository.save(entity);
     }
 
     public List<Cliente> findAll(){
         return clienteRepository.findAll();
+    }
+
+    public Optional<Cliente> findById(long id){
+        return clienteRepository.findById(id);
     }
 
     public Optional<Cliente> getClienteById(Long id) {
