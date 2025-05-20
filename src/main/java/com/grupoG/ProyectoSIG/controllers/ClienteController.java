@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @CrossOrigin("*")
 public class ClienteController {
+
     @Autowired
     private ClienteService clienteService;
 
@@ -26,5 +27,16 @@ public class ClienteController {
         Cliente clienteSaved = clienteService.save(clienteModel);
         URI location = URI.create("/cliente/" + clienteSaved.getId());
         return ResponseEntity.created(location).body(clienteSaved);
+    }
+
+    @GetMapping("/existeClienteEmail")
+    public ResponseEntity<?> existeClienteEmail (String email){
+
+        try {
+            clienteService.getClienteByEmail(email);
+            return ResponseEntity.ok(clienteService.getClienteByEmail(email));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("El cliente no existe");
+        }
     }
 }
