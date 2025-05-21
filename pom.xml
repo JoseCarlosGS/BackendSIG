@@ -90,6 +90,22 @@
 			<version>0.12.6</version>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.mapbox.mapboxsdk/mapbox-sdk-turf -->
+		<dependency>
+			<groupId>com.mapbox.mapboxsdk</groupId>
+			<artifactId>mapbox-sdk-turf</artifactId>
+			<version>5.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.1.1</version> <!-- o la versión más reciente -->
+		</dependency>
+
 	</dependencies>
 
 	<build>
