@@ -24,6 +24,10 @@ public class Pedido {
     private String descripcion;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_direccion_origen", nullable = false)
+    private Ubicacion direccion_origen;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_direccion_envio", nullable = false)
     private Ubicacion direccion_envio;
 
