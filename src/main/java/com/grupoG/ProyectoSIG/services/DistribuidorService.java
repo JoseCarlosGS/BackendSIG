@@ -19,6 +19,9 @@ public class DistribuidorService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UbicacionService ubicacionService;
+
 
     public <S extends com.grupoG.ProyectoSIG.models.Distribuidor> S save(S entity) {
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
@@ -37,14 +40,17 @@ public class DistribuidorService {
         return distribuidorRepository.findById(id);
     }
 
-    public Optional<Distribuidor> getMasCercano(UbicacionDTO ubicacion){
+    public Optional<Distribuidor> getMasCercano(Ubicacion ubicacion){
         Distribuidor cercano = distribuidorRepository.findAll().getFirst();
         return distribuidorRepository.findById(cercano.getId());
     }
 
-    public UbicacionDTO getUbicacionById(Long id){
+    public Ubicacion getUbicacionById(Long id){
         Distribuidor distribuidor = findById(id).orElseThrow();
-        UbicacionDTO ubicacion = new UbicacionDTO(-15.878787,-64.2323);
-        return ubicacion;
+        Ubicacion ubicacion = new Ubicacion();
+        ubicacion.setLatitud(-17.800576745238438);
+        ubicacion.setLongitud(-63.18439910641412);
+        Ubicacion saved = ubicacionService.save(ubicacion);
+        return saved;
     }
 }

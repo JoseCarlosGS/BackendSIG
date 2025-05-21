@@ -66,15 +66,15 @@ public class RutaService {
 
         return ruta;
     }
-    public RutaDTO calcularRuta(UbicacionDTO origen, UbicacionDTO destino) {
+    public RutaDTO calcularRuta(Ubicacion origen, Ubicacion destino) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", apiKey);
 
         Map<String, Object> body = new HashMap<>();
         body.put("coordinates", List.of(
-                List.of(origen.getLon(), origen.getLat()),
-                List.of(destino.getLon(), destino.getLat())
+                List.of(origen.getLongitud(), origen.getLatitud()),
+                List.of(destino.getLongitud(), destino.getLatitud())
         ));
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);

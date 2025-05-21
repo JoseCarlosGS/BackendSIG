@@ -12,25 +12,6 @@ public class ModelMapperConfig {
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper mapper = new ModelMapper();
-
-        // De Ubicacion a UbicacionDTO
-        mapper.addMappings(new PropertyMap<Ubicacion, UbicacionDTO>() {
-            @Override
-            protected void configure() {
-                map().setLat(source.getLatitud());
-                map().setLon(source.getLongitud());
-            }
-        });
-
-        // De UbicacionDTO a Ubicacion
-        mapper.addMappings(new PropertyMap<UbicacionDTO, Ubicacion>() {
-            @Override
-            protected void configure() {
-                map().setLatitud(source.getLat());
-                map().setLongitud(source.getLon());
-            }
-        });
-
         return mapper;
     }
 }
