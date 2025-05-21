@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cliente")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "nombre", nullable = false, length = 50)
@@ -30,6 +30,7 @@ public class Cliente {
     @Column(name = "telefono", length = 20)
     private String telefono;
 
-    @Column(nullable = false)
-    private String direccion;
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn( name = "id_ubicacion", nullable = false)
+    private Ubicacion ubicacion;
 }

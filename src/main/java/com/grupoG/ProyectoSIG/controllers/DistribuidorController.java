@@ -12,7 +12,7 @@ import java.net.URI;
 import java.util.List;
 
 @RequestMapping("api/distribuidor")
-@Controller
+@RestController
 @CrossOrigin("*")
 public class DistribuidorController {
     @Autowired
