@@ -1,6 +1,5 @@
 package com.grupoG.ProyectoSIG.services;
 
-import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Distribuidor;
 import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.repositories.DistribuidorRepository;
@@ -23,7 +22,7 @@ public class DistribuidorService {
     private UbicacionService ubicacionService;
 
 
-    public <S extends com.grupoG.ProyectoSIG.models.Distribuidor> S save(S entity) {
+    public <S extends Distribuidor> S save(S entity) {
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         return distribuidorRepository.save(entity);
     }
