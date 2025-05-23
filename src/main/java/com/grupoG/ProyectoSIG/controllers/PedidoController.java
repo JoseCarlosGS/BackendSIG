@@ -34,7 +34,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.findAll());
     }
 
-    @GetMapping("/")
+    @GetMapping("/ruta")
     public ResponseEntity<RutaDTO> calularRuta(@RequestParam Long distribuidorId,
                                                @RequestParam Long pedidoId,
                                                @RequestParam String to){
@@ -47,5 +47,11 @@ public class PedidoController {
             throw new IllegalArgumentException("Se requieren dos ubicaciones: origen y destino.");
         }
         return rutaService.calcularRuta(ubicaciones.get(0), ubicaciones.get(1));
+    }
+
+    @PostMapping("/asignar")
+    public ResponseEntity<Pedido> asignarDistribuidor(@RequestBody Pedido pedido) throws Exception {
+        Pedido pedidoAsignado = pedidoService.asignarDistribuidorAlPedido(pedido);
+        return ResponseEntity.ok(pedidoAsignado);
     }
 }
