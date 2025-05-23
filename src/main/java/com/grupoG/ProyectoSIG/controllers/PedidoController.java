@@ -1,7 +1,6 @@
 package com.grupoG.ProyectoSIG.controllers;
 
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
-import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Pedido;
 import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.services.PedidoService;
