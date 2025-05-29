@@ -73,8 +73,6 @@ public class PedidoService {
         Ubicacion origen = pedido.getDireccion_origen();
 
         List<Distribuidor> disponibles = distribuidorRepository.findByDisponibleTrue();
-        System.out.println(disponibles);
-        System.out.println("-----------------------------");
 
         if (disponibles.isEmpty()) {
             throw new RuntimeException("No hay distribuidores disponibles");
@@ -84,10 +82,6 @@ public class PedidoService {
         double menorDistancia = Double.MAX_VALUE;
 
         for (Distribuidor dist : disponibles) {
-            System.out.println(origen);
-            System.out.println("-----------------------------");
-            System.out.println(dist.getUbicacionActual());
-            System.out.println("-----------------------------");
             RutaDTO ruta = rutaService.calcularRuta(origen, dist.getUbicacionActual());
 
             if (ruta.getDistanciaKm() < menorDistancia) {
