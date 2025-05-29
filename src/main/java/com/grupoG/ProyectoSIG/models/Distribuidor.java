@@ -28,4 +28,9 @@ public class Distribuidor {
     private String telefono;
     private String tipoVehiculo;
     private Integer capacidadCarga;
+
+    private Boolean disponible;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Ubicacion ubicacionActual;
 }
