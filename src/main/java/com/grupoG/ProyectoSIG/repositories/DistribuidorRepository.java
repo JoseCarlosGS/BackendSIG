@@ -11,6 +11,4 @@ import java.util.Optional;
 public interface DistribuidorRepository extends JpaRepository<Distribuidor, Long> {
     Optional<Distribuidor> findByEmail(String email);
     List<Distribuidor> findByNombreContainingIgnoreCase(String nombre);
-
-    List<Distribuidor> findByDisponibleTrue();
 }
