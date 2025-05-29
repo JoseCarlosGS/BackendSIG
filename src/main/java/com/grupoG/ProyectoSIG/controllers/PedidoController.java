@@ -53,4 +53,10 @@ public class PedidoController {
         Pedido pedidoAsignado = pedidoService.asignarDistribuidorAlPedido(pedido);
         return ResponseEntity.ok(pedidoAsignado);
     }
+
+    @GetMapping("/{pedidoId}")
+    public ResponseEntity<?> pedidoEntregado(@PathVariable Long pedidoId) {
+        Pedido pedido = pedidoService.pedidoEntregado(pedidoId);
+        return ResponseEntity.ok(pedido);
+    }
 }

@@ -121,4 +121,17 @@ public class PedidoService {
 
 
     // pedidoEntregado (cambiar el estado del pedido a entregado y cambiar el distribuidor a disponible)
+    public Pedido pedidoEntregado(Long pedidoId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido con ID " + pedidoId + " no encontrado"));
+
+        Distribuidor distribuidor = pedido.getDistribuidor();
+        if (distribuidor != null) {
+            distribuidor.setDisponible(true);
+            distribuidorRepository.save(distribuidor);
+        }
+
+        pedido.setEstado(EstadoPedido.ENTREGADO);
+        return pedidoRepository.save(pedido);
+    }
 }
