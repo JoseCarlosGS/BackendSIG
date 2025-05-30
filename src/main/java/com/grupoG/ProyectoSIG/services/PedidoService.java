@@ -1,6 +1,8 @@
 package com.grupoG.ProyectoSIG.services;
 
+import com.grupoG.ProyectoSIG.dto.PedidoDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
+import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.*;
 import com.grupoG.ProyectoSIG.repositories.ClienteRepository;
 import com.grupoG.ProyectoSIG.repositories.DistribuidorRepository;
@@ -30,13 +32,23 @@ public class PedidoService {
     @Autowired
     private DistribuidorService distribuidorService;
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
-    public <S extends Pedido> S save(S entity) {
+    public Pedido save(PedidoDTO entity) {
+        Cliente cliente = clienteService.findById(entity.getClienteId());
+
+        Pedido pedido = new Pedido();
+        pedido.setFecha(entity.getFecha());
+        pedido.setProducto(entity.getProducto());
+        pedido.setDescripcion(entity.getDescripcion());
+        pedido.setDireccion_envio(entity.getDireccion_envio());
+        pedido.setDireccion_origen(entity.getDireccion_origen());
+        pedido.setCliente(cliente);
+
         Ubicacion origen = entity.getDireccion_envio();
         Distribuidor distribuidorCercano = distribuidorService.getMasCercano(origen).orElseThrow();
-        entity.setDistribuidor(distribuidorCercano);
-        return pedidoRepository.save(entity);
+        pedido.setDistribuidor(distribuidorCercano);
+        return pedidoRepository.save(pedido);
     }
 
     public List<Pedido> findAll(){
@@ -98,8 +110,7 @@ public class PedidoService {
         mejorDistribuidor = distribuidorRepository.findById(mejorDistribuidor.getId())
                 .orElseThrow(() -> new RuntimeException("El distribuidor no se encuentra en la base de datos"));
 
-        Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
-                .orElseThrow(() -> new RuntimeException("El cliente no se encuentra en la base de datos"));
+        Cliente cliente = clienteService.findById(pedido.getCliente().getId());
 
         pedido.setDistribuidor(mejorDistribuidor);
         pedido.setEstado(EstadoPedido.ACEPTADO);

@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.controllers;
 
+import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Cliente;
 import com.grupoG.ProyectoSIG.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,16 @@ public class ClienteController {
     @GetMapping
     public ResponseEntity<List<Cliente>> listarClientes(){
         return ResponseEntity.ok(clienteService.findAll());
+    }
+
+    @GetMapping("/{clienteId}")
+    public ResponseEntity<Cliente> obtenerPorId(@PathVariable Long clienteId){
+        return ResponseEntity.ok(clienteService.findById(clienteId));
+    }
+
+    @GetMapping("/ubicacion/{clienteId}")
+    public ResponseEntity<UbicacionDTO> getUbicacionByid(@PathVariable Long clienteId){
+        return ResponseEntity.ok(clienteService.getUbicacionById(clienteId));
     }
 
     @PostMapping
