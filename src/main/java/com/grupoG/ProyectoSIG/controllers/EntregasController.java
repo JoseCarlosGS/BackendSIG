@@ -4,6 +4,7 @@ import com.grupoG.ProyectoSIG.dto.RutaDTO;
 import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Entrega;
 import com.grupoG.ProyectoSIG.models.Pedido;
+import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.services.EntregaService;
 import com.grupoG.ProyectoSIG.services.PedidoService;
 import com.grupoG.ProyectoSIG.services.RutaService;
@@ -80,14 +81,14 @@ public class EntregasController {
         return entregaService.findById(id)
                 .map(entrega -> {
                     try {
-                        UbicacionDTO origen = new UbicacionDTO(
-                            entrega.getPedido().getDireccion_envio().getLatitud(),
-                            entrega.getPedido().getDireccion_envio().getLongitud()
+                        Ubicacion origen = new Ubicacion(
                         );
-                        UbicacionDTO destino = new UbicacionDTO(
-                            entrega.getUbicacion().getLatitud(),
-                            entrega.getUbicacion().getLongitud()
+                        origen.setLatitud(entrega.getPedido().getDireccion_envio().getLatitud());
+                        origen.setLongitud(entrega.getPedido().getDireccion_envio().getLongitud());
+                        Ubicacion destino = new Ubicacion(
                         );
+                        destino.setLatitud(entrega.getUbicacion().getLatitud());
+                        destino.setLongitud(entrega.getUbicacion().getLongitud());
                         return ResponseEntity.ok(rutaService.calcularRuta(origen, destino));
                     } catch (Exception e) {
                         return ResponseEntity.badRequest().<RutaDTO>build();

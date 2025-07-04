@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.controllers;
 
+import com.grupoG.ProyectoSIG.dto.ClienteRequestDTO;
 import com.grupoG.ProyectoSIG.dto.ClienteResponseDTO;
 import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Cliente;
@@ -35,8 +36,8 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> guardarCliente(@RequestBody Cliente clienteModel) {
-        Cliente clienteSaved = clienteService.save(clienteModel);
+    public ResponseEntity<ClienteResponseDTO> guardarCliente(@RequestBody ClienteRequestDTO clienteModel) {
+        ClienteResponseDTO clienteSaved = clienteService.save(clienteModel);
         URI location = URI.create("/cliente/" + clienteSaved.getId());
         return ResponseEntity.created(location).body(clienteSaved);
     }
