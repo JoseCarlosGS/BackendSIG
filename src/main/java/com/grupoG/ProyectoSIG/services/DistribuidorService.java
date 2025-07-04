@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.services;
 
+import com.grupoG.ProyectoSIG.dto.DistribuidorResponseDTO;
 import com.grupoG.ProyectoSIG.models.Distribuidor;
 import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.repositories.DistribuidorRepository;
@@ -7,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DistribuidorService {
@@ -27,8 +30,11 @@ public class DistribuidorService {
         return distribuidorRepository.save(entity);
     }
 
-    public List<Distribuidor> findAll(){
-        return distribuidorRepository.findAll();
+    public List<DistribuidorResponseDTO> findAll() {
+        return distribuidorRepository.findAll()
+                .stream()
+                .map(DistribuidorResponseDTO::new)
+                .collect(Collectors.toList());
     }
 
     public Optional<Distribuidor> findById(long id){

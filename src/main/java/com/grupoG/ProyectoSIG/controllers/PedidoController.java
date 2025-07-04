@@ -1,5 +1,8 @@
 package com.grupoG.ProyectoSIG.controllers;
 
+import com.grupoG.ProyectoSIG.dto.PedidoDTO;
+import com.grupoG.ProyectoSIG.dto.PedidoRequestDTO;
+import com.grupoG.ProyectoSIG.dto.PedidoResponseDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
 import com.grupoG.ProyectoSIG.models.Pedido;
 import com.grupoG.ProyectoSIG.models.Ubicacion;
@@ -22,14 +25,14 @@ public class PedidoController {
     private PedidoService pedidoService;
 
     @PostMapping
-    public ResponseEntity<Pedido> create(Pedido pedido){
-        Pedido pedidoSaved = pedidoService.save(pedido);
+    public ResponseEntity<PedidoResponseDTO> create(@RequestBody PedidoRequestDTO pedido){
+        PedidoResponseDTO pedidoSaved = pedidoService.save(pedido);
         URI location = URI.create("/pedido/" + pedidoSaved.getId());
         return ResponseEntity.created(location).body(pedidoSaved);
     }
 
     @GetMapping
-    public ResponseEntity<List<Pedido>> getAll(){
+    public ResponseEntity<List<PedidoResponseDTO>> getAll(){
         return ResponseEntity.ok(pedidoService.findAll());
     }
 

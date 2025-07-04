@@ -1,6 +1,10 @@
 package com.grupoG.ProyectoSIG.services;
 
+import com.grupoG.ProyectoSIG.dto.PedidoDTO;
+import com.grupoG.ProyectoSIG.dto.PedidoRequestDTO;
+import com.grupoG.ProyectoSIG.dto.PedidoResponseDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
+import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.*;
 import com.grupoG.ProyectoSIG.repositories.ClienteRepository;
 import com.grupoG.ProyectoSIG.repositories.DistribuidorRepository;
@@ -30,17 +34,40 @@ public class PedidoService {
     @Autowired
     private DistribuidorService distribuidorService;
     @Autowired
-    private ClienteRepository clienteRepository;
+    private ClienteService clienteService;
 
-    public <S extends Pedido> S save(S entity) {
-        Ubicacion origen = entity.getDireccion_envio();
+    public PedidoResponseDTO save(PedidoRequestDTO entity) {
+        Cliente cliente = clienteService.findById(entity.getClienteId());
+
+        Pedido pedido = new Pedido();
+        pedido.setFecha(entity.getFecha());
+        pedido.setProducto(entity.getProducto());
+        pedido.setDescripcion(entity.getDescripcion());
+
+        Ubicacion origen = new Ubicacion();
+        Ubicacion destino = new Ubicacion();
+        origen.setDireccion(entity.getDireccionOrigen());
+        origen.setLongitud(entity.getLongitudOrigen());
+        origen.setLatitud(entity.getLatitudOrigen());
+
+        destino.setDireccion(entity.getDireccionEnvio());
+        destino.setLongitud(entity.getLongitudEnvio());
+        destino.setLatitud(entity.getLatitudEnvio());
+
+        pedido.setDireccion_envio(destino);
+        pedido.setDireccion_origen(origen);
+        pedido.setCliente(cliente);
+
+
         Distribuidor distribuidorCercano = distribuidorService.getMasCercano(origen).orElseThrow();
-        entity.setDistribuidor(distribuidorCercano);
-        return pedidoRepository.save(entity);
+        pedido.setDistribuidor(distribuidorCercano);
+
+        return new PedidoResponseDTO(pedidoRepository.save(pedido));
     }
 
-    public List<Pedido> findAll(){
-        return pedidoRepository.findAll();
+    public List<PedidoResponseDTO> findAll(){
+
+        return pedidoRepository.findAll().stream().map(PedidoResponseDTO::new).toList();
     }
 
     public RutaDTO getRutaById(Long pedidoId, Long distribuidorId, String to) {
@@ -98,8 +125,7 @@ public class PedidoService {
         mejorDistribuidor = distribuidorRepository.findById(mejorDistribuidor.getId())
                 .orElseThrow(() -> new RuntimeException("El distribuidor no se encuentra en la base de datos"));
 
-        Cliente cliente = clienteRepository.findById(pedido.getCliente().getId())
-                .orElseThrow(() -> new RuntimeException("El cliente no se encuentra en la base de datos"));
+        Cliente cliente = clienteService.findById(pedido.getCliente().getId());
 
         pedido.setDistribuidor(mejorDistribuidor);
         pedido.setEstado(EstadoPedido.ACEPTADO);

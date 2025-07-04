@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.controllers;
 
+import com.grupoG.ProyectoSIG.dto.DistribuidorResponseDTO;
 import com.grupoG.ProyectoSIG.models.Cliente;
 import com.grupoG.ProyectoSIG.models.Distribuidor;
 import com.grupoG.ProyectoSIG.services.DistribuidorService;
@@ -19,7 +20,7 @@ public class DistribuidorController {
     private DistribuidorService distribuidorService;
 
     @GetMapping
-    public ResponseEntity<List<Distribuidor>>getAll(){
+    public ResponseEntity<List<DistribuidorResponseDTO>>getAll(){
         return ResponseEntity.ok(distribuidorService.findAll());
     }
 
