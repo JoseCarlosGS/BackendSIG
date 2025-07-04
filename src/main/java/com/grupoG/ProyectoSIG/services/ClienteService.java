@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.services;
 
+import com.grupoG.ProyectoSIG.dto.ClienteResponseDTO;
 import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.Cliente;
@@ -30,8 +31,8 @@ public class ClienteService {
         return clienteRepository.save(entity);
     }
 
-    public List<Cliente> findAll(){
-        return clienteRepository.findAll();
+    public List<ClienteResponseDTO> findAll(){
+        return clienteRepository.findAll().stream().map(ClienteResponseDTO::new).toList();
     }
 
     public Cliente findById(long id){

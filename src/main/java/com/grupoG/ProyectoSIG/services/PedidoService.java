@@ -1,6 +1,8 @@
 package com.grupoG.ProyectoSIG.services;
 
 import com.grupoG.ProyectoSIG.dto.PedidoDTO;
+import com.grupoG.ProyectoSIG.dto.PedidoRequestDTO;
+import com.grupoG.ProyectoSIG.dto.PedidoResponseDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
 import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.*;
@@ -34,25 +36,38 @@ public class PedidoService {
     @Autowired
     private ClienteService clienteService;
 
-    public Pedido save(PedidoDTO entity) {
+    public PedidoResponseDTO save(PedidoRequestDTO entity) {
         Cliente cliente = clienteService.findById(entity.getClienteId());
 
         Pedido pedido = new Pedido();
         pedido.setFecha(entity.getFecha());
         pedido.setProducto(entity.getProducto());
         pedido.setDescripcion(entity.getDescripcion());
-        pedido.setDireccion_envio(entity.getDireccion_envio());
-        pedido.setDireccion_origen(entity.getDireccion_origen());
+
+        Ubicacion origen = new Ubicacion();
+        Ubicacion destino = new Ubicacion();
+        origen.setDireccion(entity.getDireccionOrigen());
+        origen.setLongitud(entity.getLongitudOrigen());
+        origen.setLatitud(entity.getLatitudOrigen());
+
+        destino.setDireccion(entity.getDireccionEnvio());
+        destino.setLongitud(entity.getLongitudEnvio());
+        destino.setLatitud(entity.getLatitudEnvio());
+
+        pedido.setDireccion_envio(destino);
+        pedido.setDireccion_origen(origen);
         pedido.setCliente(cliente);
 
-        Ubicacion origen = entity.getDireccion_envio();
+
         Distribuidor distribuidorCercano = distribuidorService.getMasCercano(origen).orElseThrow();
         pedido.setDistribuidor(distribuidorCercano);
-        return pedidoRepository.save(pedido);
+
+        return new PedidoResponseDTO(pedidoRepository.save(pedido));
     }
 
-    public List<Pedido> findAll(){
-        return pedidoRepository.findAll();
+    public List<PedidoResponseDTO> findAll(){
+
+        return pedidoRepository.findAll().stream().map(PedidoResponseDTO::new).toList();
     }
 
     public RutaDTO getRutaById(Long pedidoId, Long distribuidorId, String to) {
