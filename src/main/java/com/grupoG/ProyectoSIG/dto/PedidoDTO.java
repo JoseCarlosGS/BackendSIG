@@ -14,7 +14,7 @@ public class PedidoDTO {
     Date fecha;
     String producto;
     String descripcion;
-    Ubicacion direccion_origen;
+    UbicacionDTO direccion_origen;
     Ubicacion direccion_envio;
     Long clienteId;
 }

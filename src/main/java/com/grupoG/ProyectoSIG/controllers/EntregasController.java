@@ -4,9 +4,11 @@ import com.grupoG.ProyectoSIG.dto.RutaDTO;
 import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Entrega;
 import com.grupoG.ProyectoSIG.models.Pedido;
+import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.services.EntregaService;
 import com.grupoG.ProyectoSIG.services.PedidoService;
 import com.grupoG.ProyectoSIG.services.RutaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/entregas")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class EntregasController {
 
     @Autowired
@@ -80,11 +83,11 @@ public class EntregasController {
         return entregaService.findById(id)
                 .map(entrega -> {
                     try {
-                        UbicacionDTO origen = new UbicacionDTO(
+                        Ubicacion origen = new Ubicacion(
                             entrega.getPedido().getDireccion_envio().getLatitud(),
                             entrega.getPedido().getDireccion_envio().getLongitud()
                         );
-                        UbicacionDTO destino = new UbicacionDTO(
+                        Ubicacion destino = new Ubicacion(
                             entrega.getUbicacion().getLatitud(),
                             entrega.getUbicacion().getLongitud()
                         );

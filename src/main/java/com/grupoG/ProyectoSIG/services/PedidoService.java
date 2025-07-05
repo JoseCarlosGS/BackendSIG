@@ -1,9 +1,6 @@
 package com.grupoG.ProyectoSIG.services;
 
-import com.grupoG.ProyectoSIG.dto.PedidoDTO;
-import com.grupoG.ProyectoSIG.dto.PedidoRequestDTO;
-import com.grupoG.ProyectoSIG.dto.PedidoResponseDTO;
-import com.grupoG.ProyectoSIG.dto.RutaDTO;
+import com.grupoG.ProyectoSIG.dto.*;
 import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.*;
 import com.grupoG.ProyectoSIG.repositories.ClienteRepository;

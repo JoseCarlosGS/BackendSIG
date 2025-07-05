@@ -22,4 +22,8 @@ public class Ubicacion {
     private Double longitud;
 
     private String direccion;
+
+    public Ubicacion(Double latitud, Double longitud) {
+
+    }
 }
