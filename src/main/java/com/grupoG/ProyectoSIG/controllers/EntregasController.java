@@ -8,6 +8,7 @@ import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.services.EntregaService;
 import com.grupoG.ProyectoSIG.services.PedidoService;
 import com.grupoG.ProyectoSIG.services.RutaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/entregas")
 @CrossOrigin("*")
+@RequiredArgsConstructor
 public class EntregasController {
 
     @Autowired
@@ -82,10 +84,12 @@ public class EntregasController {
                 .map(entrega -> {
                     try {
                         Ubicacion origen = new Ubicacion(
+                            entrega.getPedido().getDireccion_envio().getLatitud(),
+                            entrega.getPedido().getDireccion_envio().getLongitud()
                         );
-                        origen.setLatitud(entrega.getPedido().getDireccion_envio().getLatitud());
-                        origen.setLongitud(entrega.getPedido().getDireccion_envio().getLongitud());
                         Ubicacion destino = new Ubicacion(
+                            entrega.getUbicacion().getLatitud(),
+                            entrega.getUbicacion().getLongitud()
                         );
                         destino.setLatitud(entrega.getUbicacion().getLatitud());
                         destino.setLongitud(entrega.getUbicacion().getLongitud());
