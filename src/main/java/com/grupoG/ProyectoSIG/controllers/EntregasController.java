@@ -91,6 +91,8 @@ public class EntregasController {
                             entrega.getUbicacion().getLatitud(),
                             entrega.getUbicacion().getLongitud()
                         );
+                        destino.setLatitud(entrega.getUbicacion().getLatitud());
+                        destino.setLongitud(entrega.getUbicacion().getLongitud());
                         return ResponseEntity.ok(rutaService.calcularRuta(origen, destino));
                     } catch (Exception e) {
                         return ResponseEntity.badRequest().<RutaDTO>build();

@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.controllers;
 
+import com.grupoG.ProyectoSIG.dto.DistribuidorRequestDTO;
 import com.grupoG.ProyectoSIG.dto.DistribuidorResponseDTO;
 import com.grupoG.ProyectoSIG.models.Cliente;
 import com.grupoG.ProyectoSIG.models.Distribuidor;
@@ -25,8 +26,8 @@ public class DistribuidorController {
     }
 
     @PostMapping
-    public ResponseEntity<Distribuidor> guardarCliente(@RequestBody Distribuidor distribuidor) {
-        Distribuidor distribuidorSaved = distribuidorService.save(distribuidor);
+    public ResponseEntity<DistribuidorResponseDTO> guardarCliente(@RequestBody DistribuidorRequestDTO distribuidor) {
+        DistribuidorResponseDTO distribuidorSaved = distribuidorService.save(distribuidor);
         URI location = URI.create("/cliente/" + distribuidorSaved.getId());
         return ResponseEntity.created(location).body(distribuidorSaved);
     }
