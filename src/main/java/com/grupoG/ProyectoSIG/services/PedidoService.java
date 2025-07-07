@@ -56,10 +56,14 @@ public class PedidoService {
         pedido.setCliente(cliente);
 
 
-        Distribuidor distribuidorCercano = distribuidorService.getMasCercano(origen).orElseThrow();
-        pedido.setDistribuidor(distribuidorCercano);
-
-        return new PedidoResponseDTO(pedidoRepository.save(pedido));
+        //Distribuidor distribuidorCercano = distribuidorService.getMasCercano(origen).orElseThrow();
+        //pedido.setDistribuidor(distribuidorCercano);
+        Pedido pedidosaved = pedidoRepository.save(pedido);
+        try {
+            return new PedidoResponseDTO(asignarDistribuidorAlPedido(pedidosaved));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<PedidoResponseDTO> findAll(){
