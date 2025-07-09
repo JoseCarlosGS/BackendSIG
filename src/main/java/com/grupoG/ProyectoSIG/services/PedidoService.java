@@ -155,4 +155,14 @@ public class PedidoService {
         pedido.setEstado(EstadoPedido.ENTREGADO);
         return pedidoRepository.save(pedido);
     }
+
+    public List<PedidoResponseDTO> obtenerPorDistribuidorId(Long distribuidorId){
+        if (distribuidorRepository.findById(distribuidorId).isEmpty()){
+            throw new RuntimeException("No se encontró un distribuidor con id: "+distribuidorId);
+        }
+        return pedidoRepository.findByDistribuidorId(distribuidorId)
+                .stream()
+                .map(PedidoResponseDTO::new)
+                .toList();
+    }
 }
