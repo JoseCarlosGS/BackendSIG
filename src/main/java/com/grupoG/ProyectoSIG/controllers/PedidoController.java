@@ -6,14 +6,17 @@ import com.grupoG.ProyectoSIG.dto.PedidoResponseDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
 import com.grupoG.ProyectoSIG.models.Pedido;
 import com.grupoG.ProyectoSIG.models.Ubicacion;
+import com.grupoG.ProyectoSIG.services.FirebaseDataService;
 import com.grupoG.ProyectoSIG.services.PedidoService;
 import com.grupoG.ProyectoSIG.services.RutaService;
+import org.hibernate.sql.exec.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/pedido")
@@ -23,6 +26,9 @@ public class PedidoController {
     private RutaService rutaService;
     @Autowired
     private PedidoService pedidoService;
+
+    @Autowired
+    private FirebaseDataService firebaseDataService;
 
     @PostMapping
     public ResponseEntity<PedidoResponseDTO> create(@RequestBody PedidoRequestDTO pedido){
@@ -61,5 +67,20 @@ public class PedidoController {
     public ResponseEntity<?> pedidoEntregado(@PathVariable Long pedidoId) {
         Pedido pedido = pedidoService.pedidoEntregado(pedidoId);
         return ResponseEntity.ok(pedido);
+    }
+
+    @GetMapping("/distribuidor/{distribuidorId}")
+    public ResponseEntity<List<PedidoResponseDTO>> obtenerPorDistribuidor(@PathVariable Long distribuidorId){
+        return ResponseEntity.ok(pedidoService.obtenerPorDistribuidorId(distribuidorId));
+    }
+
+    @GetMapping("/distribuidores/activos")
+    public ResponseEntity<?> getAllDistributorLocations() {
+        try {
+            Map<String, Map<String, Object>> allLocations = firebaseDataService.getAllActiveDistributorLocations();
+            return ResponseEntity.ok(allLocations);
+        } catch (InterruptedException | ExecutionException e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error al obtener todos los datos: " + e.getMessage()));
+        }
     }
 }

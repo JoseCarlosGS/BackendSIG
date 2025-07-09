@@ -31,4 +31,25 @@ public class DistribuidorController {
         URI location = URI.create("/cliente/" + distribuidorSaved.getId());
         return ResponseEntity.created(location).body(distribuidorSaved);
     }
+    @GetMapping("/actualizar-localizacion")
+    public ResponseEntity<Void> actualizarUbicaciones(){
+        try{
+            distribuidorService.updateAllLocations();
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @PutMapping("/logout/{id}")
+    public ResponseEntity<Void> logout(@PathVariable Long id){
+        Distribuidor distribuidor = distribuidorService.findById(id);
+        if (distribuidor.getDisponible()) return ResponseEntity.ok().build();
+        else {
+            distribuidorService.cambiarDisponibilidad(id);
+            return ResponseEntity.ok().build();
+        }
+    }
+
 }
