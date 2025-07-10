@@ -4,6 +4,7 @@ import com.grupoG.ProyectoSIG.dto.PedidoDTO;
 import com.grupoG.ProyectoSIG.dto.PedidoRequestDTO;
 import com.grupoG.ProyectoSIG.dto.PedidoResponseDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
+import com.grupoG.ProyectoSIG.models.EstadoPedido;
 import com.grupoG.ProyectoSIG.models.Pedido;
 import com.grupoG.ProyectoSIG.models.Ubicacion;
 import com.grupoG.ProyectoSIG.services.FirebaseDataService;
@@ -70,9 +71,16 @@ public class PedidoController {
     }
 
     @GetMapping("/distribuidor/{distribuidorId}")
-    public ResponseEntity<List<PedidoResponseDTO>> obtenerPorDistribuidor(@PathVariable Long distribuidorId){
-        return ResponseEntity.ok(pedidoService.obtenerPorDistribuidorId(distribuidorId));
+    public ResponseEntity<List<PedidoResponseDTO>> obtenerPorDistribuidor(@PathVariable Long distribuidorId,
+                                                                          @RequestParam(required = false) EstadoPedido estado){
+        if (estado != null) return ResponseEntity.ok(pedidoService.obtenerPorDistribuidorYEstadoId(distribuidorId, estado));
+        else return ResponseEntity.ok(pedidoService.obtenerPorDistribuidorId(distribuidorId));
     }
+
+    @GetMapping("/cliente/{clienteId}")
+        public ResponseEntity<List<PedidoResponseDTO>> obtenerPorCliente(@PathVariable Long clienteId){
+            return ResponseEntity.ok(pedidoService.obtenerPorClienteId(clienteId));
+        }
 
     @GetMapping("/distribuidores/activos")
     public ResponseEntity<?> getAllDistributorLocations() {

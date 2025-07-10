@@ -165,4 +165,24 @@ public class PedidoService {
                 .map(PedidoResponseDTO::new)
                 .toList();
     }
+
+    public List<PedidoResponseDTO> obtenerPorDistribuidorYEstadoId(Long distribuidorId, EstadoPedido estado){
+        if (distribuidorRepository.findById(distribuidorId).isEmpty()){
+            throw new RuntimeException("No se encontró un distribuidor con id: "+distribuidorId);
+        }
+        return pedidoRepository.findByDistribuidorIdAndEstado(distribuidorId, estado)
+                .stream()
+                .map(PedidoResponseDTO::new)
+                .toList();
+    }
+
+    public List<PedidoResponseDTO> obtenerPorClienteId(Long clienteId){
+        if (distribuidorRepository.findById(clienteId).isEmpty()){
+            throw new RuntimeException("No se encontró un cliente con id: "+clienteId);
+        }
+        return pedidoRepository.findByClienteId(clienteId)
+                .stream()
+                .map(PedidoResponseDTO::new)
+                .toList();
+    }
 }
