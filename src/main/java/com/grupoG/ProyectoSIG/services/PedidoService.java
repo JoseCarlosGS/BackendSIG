@@ -5,12 +5,18 @@ import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.*;
 import com.grupoG.ProyectoSIG.repositories.ClienteRepository;
 import com.grupoG.ProyectoSIG.repositories.DistribuidorRepository;
+import com.grupoG.ProyectoSIG.repositories.EntregaRepository;
 import com.grupoG.ProyectoSIG.repositories.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +38,9 @@ public class PedidoService {
     private DistribuidorService distribuidorService;
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private EntregaRepository entregaRepository;
 
     public PedidoResponseDTO save(PedidoRequestDTO entity) {
         Cliente cliente = clienteService.findById(entity.getClienteId());
@@ -185,6 +194,16 @@ public class PedidoService {
                 .toList();
     }
 
+    public List<PedidoResponseDTO> obtenerActivosPorDistribuidor(Long distribuidorId){
+        if (distribuidorRepository.findById(distribuidorId).isEmpty()){
+            throw new RuntimeException("No se encontró un distribuidor con id: "+distribuidorId);
+        }
+        List<Pedido> response = new ArrayList<>();
+        response.addAll(pedidoRepository.findByDistribuidorIdAndEstado(distribuidorId, EstadoPedido.ACEPTADO));
+        response.addAll(pedidoRepository.findByDistribuidorIdAndEstado(distribuidorId, EstadoPedido.EN_CAMINO));
+        return response.stream().map(PedidoResponseDTO::new).toList();
+    }
+
     public List<PedidoResponseDTO> obtenerPorClienteId(Long clienteId){
         if (distribuidorRepository.findById(clienteId).isEmpty()){
             throw new RuntimeException("No se encontró un cliente con id: "+clienteId);
@@ -193,5 +212,18 @@ public class PedidoService {
                 .stream()
                 .map(PedidoResponseDTO::new)
                 .toList();
+    }
+
+    public void finalizarPedido(Long pedidoId){
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(()-> new ResourceNotFoundException("Pedido con id: "+pedidoId+" no econtrado"));
+        pedido.setEstado(EstadoPedido.ENTREGADO);
+        Entrega entrega = new Entrega();
+        entrega.setPedido(pedido);
+        entrega.setUbicacion(pedido.getDireccion_envio());
+        entrega.setFecha(pedido.getFecha());
+        entrega.setHora(Time.valueOf(LocalTime.now()));
+        entregaRepository.save(entrega);
+        pedidoRepository.save(pedido);
     }
 }
