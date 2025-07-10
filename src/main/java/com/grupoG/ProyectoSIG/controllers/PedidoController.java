@@ -50,6 +50,12 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.getRutaById(pedidoId, distribuidorId,to));
     }
 
+    @GetMapping("/ruta-camino")
+    public ResponseEntity<RutaDTO> calcularNuevaRuta(@RequestParam Long distribuidorId,
+                                                     @RequestParam Long pedidoId){
+        return ResponseEntity.ok(pedidoService.recalcularPedido(pedidoId, distribuidorId));
+    }
+
     @PostMapping("/calcular-ruta")
     public RutaDTO obtenerRuta(@RequestBody List<Ubicacion> ubicaciones) throws Exception {
         if (ubicaciones.size() != 2) {

@@ -96,6 +96,15 @@ public class PedidoService {
         return rutaService.calcularRuta(destino, distribuidorUbicacion);
     }
 
+    public RutaDTO recalcularPedido(Long pedidoId, Long distribuidorId){
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido con ID " + pedidoId + " no encontrado"));
+        pedido.setEstado(EstadoPedido.EN_CAMINO);
+        pedidoRepository.save(pedido);
+
+        return rutaService.calcularRuta(pedido.getDireccion_origen(), pedido.getDireccion_envio());
+    }
+
     public Pedido asignarDistribuidorAlPedido(Pedido pedido) throws Exception {
 
         Ubicacion origen = pedido.getDireccion_origen();
