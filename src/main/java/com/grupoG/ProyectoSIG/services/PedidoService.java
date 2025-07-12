@@ -102,7 +102,10 @@ public class PedidoService {
             throw new IllegalStateException("Las ubicaciones no pueden ser nulas");
         }
 
-        return rutaService.calcularRuta(destino, distribuidorUbicacion);
+        RutaDTO ped_ruta = rutaService.calcularRuta(pedido.getDireccion_origen(), pedido.getDireccion_envio());
+        RutaDTO response = rutaService.calcularRuta(destino, distribuidorUbicacion);
+        response.setCoordenadasToCliente(ped_ruta.getCoordenadas());
+        return response;
     }
 
     public RutaDTO recalcularPedido(Long pedidoId, Long distribuidorId){
@@ -112,6 +115,12 @@ public class PedidoService {
         pedidoRepository.save(pedido);
 
         return rutaService.calcularRuta(pedido.getDireccion_origen(), pedido.getDireccion_envio());
+    }
+
+    public void cambiarEstado(Long pedidoId, EstadoPedido estado){
+        Pedido pedido = verificarPedido(pedidoId);
+        pedido.setEstado(estado);
+        pedidoRepository.save(pedido);
     }
 
     public Pedido asignarDistribuidorAlPedido(Pedido pedido) throws Exception {
@@ -225,5 +234,10 @@ public class PedidoService {
         entrega.setHora(Time.valueOf(LocalTime.now()));
         entregaRepository.save(entrega);
         pedidoRepository.save(pedido);
+    }
+
+    private Pedido verificarPedido(Long pedidoId){
+        return pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido con ID " + pedidoId + " no encontrado"));
     }
 }

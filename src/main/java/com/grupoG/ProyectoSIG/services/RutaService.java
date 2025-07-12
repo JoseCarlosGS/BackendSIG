@@ -98,7 +98,11 @@ public class RutaService {
             String geometry = (String) route.get("geometry");
             List<UbicacionDTO> coordenadas = decodePolyline(geometry);
 
-            return new RutaDTO(coordenadas, distanciaKm, duracionMin);
+            RutaDTO resp = new RutaDTO();
+            resp.setCoordenadas(coordenadas);
+            resp.setDistanciaKm(distanciaKm);
+            resp.setDuracionMin(duracionMin);
+            return resp;
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new RuntimeException("Las coordenadas no estan cercas de una ruta valida");

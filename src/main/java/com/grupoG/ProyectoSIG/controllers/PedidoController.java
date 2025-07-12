@@ -109,4 +109,11 @@ public class PedidoController {
         pedidoService.finalizarPedido(pedidoId);
         return ResponseEntity.ok().build();
     }
+
+    @PatchMapping("/cambiar-estado/{pedidoId}")
+    public ResponseEntity<Void> cambiarEstado(@PathVariable Long pedidoId,
+                                              @RequestParam EstadoPedido estado){
+        pedidoService.cambiarEstado(pedidoId, estado);
+        return ResponseEntity.ok().build();
+    }
 }
