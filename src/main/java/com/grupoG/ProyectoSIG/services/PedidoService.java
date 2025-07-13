@@ -5,12 +5,18 @@ import com.grupoG.ProyectoSIG.exceptions.ResourceNotFoundException;
 import com.grupoG.ProyectoSIG.models.*;
 import com.grupoG.ProyectoSIG.repositories.ClienteRepository;
 import com.grupoG.ProyectoSIG.repositories.DistribuidorRepository;
+import com.grupoG.ProyectoSIG.repositories.EntregaRepository;
 import com.grupoG.ProyectoSIG.repositories.PedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +38,9 @@ public class PedidoService {
     private DistribuidorService distribuidorService;
     @Autowired
     private ClienteService clienteService;
+
+    @Autowired
+    private EntregaRepository entregaRepository;
 
     public PedidoResponseDTO save(PedidoRequestDTO entity) {
         Cliente cliente = clienteService.findById(entity.getClienteId());
@@ -93,7 +102,10 @@ public class PedidoService {
             throw new IllegalStateException("Las ubicaciones no pueden ser nulas");
         }
 
-        return rutaService.calcularRuta(destino, distribuidorUbicacion);
+        RutaDTO ped_ruta = rutaService.calcularRuta(pedido.getDireccion_origen(), pedido.getDireccion_envio());
+        RutaDTO response = rutaService.calcularRuta(destino, distribuidorUbicacion);
+        response.setCoordenadasToCliente(ped_ruta.getCoordenadas());
+        return response;
     }
 
     public RutaDTO recalcularPedido(Long pedidoId, Long distribuidorId){
@@ -103,6 +115,12 @@ public class PedidoService {
         pedidoRepository.save(pedido);
 
         return rutaService.calcularRuta(pedido.getDireccion_origen(), pedido.getDireccion_envio());
+    }
+
+    public void cambiarEstado(Long pedidoId, EstadoPedido estado){
+        Pedido pedido = verificarPedido(pedidoId);
+        pedido.setEstado(estado);
+        pedidoRepository.save(pedido);
     }
 
     public Pedido asignarDistribuidorAlPedido(Pedido pedido) throws Exception {
@@ -185,6 +203,16 @@ public class PedidoService {
                 .toList();
     }
 
+    public List<PedidoResponseDTO> obtenerActivosPorDistribuidor(Long distribuidorId){
+        if (distribuidorRepository.findById(distribuidorId).isEmpty()){
+            throw new RuntimeException("No se encontró un distribuidor con id: "+distribuidorId);
+        }
+        List<Pedido> response = new ArrayList<>();
+        response.addAll(pedidoRepository.findByDistribuidorIdAndEstado(distribuidorId, EstadoPedido.ACEPTADO));
+        response.addAll(pedidoRepository.findByDistribuidorIdAndEstado(distribuidorId, EstadoPedido.EN_CAMINO));
+        return response.stream().map(PedidoResponseDTO::new).toList();
+    }
+
     public List<PedidoResponseDTO> obtenerPorClienteId(Long clienteId){
         if (distribuidorRepository.findById(clienteId).isEmpty()){
             throw new RuntimeException("No se encontró un cliente con id: "+clienteId);
@@ -193,5 +221,23 @@ public class PedidoService {
                 .stream()
                 .map(PedidoResponseDTO::new)
                 .toList();
+    }
+
+    public void finalizarPedido(Long pedidoId){
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(()-> new ResourceNotFoundException("Pedido con id: "+pedidoId+" no econtrado"));
+        pedido.setEstado(EstadoPedido.ENTREGADO);
+        Entrega entrega = new Entrega();
+        entrega.setPedido(pedido);
+        entrega.setUbicacion(pedido.getDireccion_envio());
+        entrega.setFecha(pedido.getFecha());
+        entrega.setHora(Time.valueOf(LocalTime.now()));
+        entregaRepository.save(entrega);
+        pedidoRepository.save(pedido);
+    }
+
+    private Pedido verificarPedido(Long pedidoId){
+        return pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new EntityNotFoundException("Pedido con ID " + pedidoId + " no encontrado"));
     }
 }

@@ -83,6 +83,13 @@ public class PedidoController {
         else return ResponseEntity.ok(pedidoService.obtenerPorDistribuidorId(distribuidorId));
     }
 
+    @GetMapping("/distribuidor/disponibles/{distribuidorId}")
+    public ResponseEntity<List<PedidoResponseDTO>> obtenerDisponiblesPorDistribuidor(@PathVariable Long distribuidorId){
+
+        return ResponseEntity.ok(pedidoService.obtenerActivosPorDistribuidor(distribuidorId));
+    }
+
+
     @GetMapping("/cliente/{clienteId}")
         public ResponseEntity<List<PedidoResponseDTO>> obtenerPorCliente(@PathVariable Long clienteId){
             return ResponseEntity.ok(pedidoService.obtenerPorClienteId(clienteId));
@@ -96,5 +103,17 @@ public class PedidoController {
         } catch (InterruptedException | ExecutionException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Error al obtener todos los datos: " + e.getMessage()));
         }
+    }
+    @PutMapping("/finalizar/{pedidoId}")
+    public ResponseEntity<Void> finalizarPedido(@PathVariable Long pedidoId){
+        pedidoService.finalizarPedido(pedidoId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/cambiar-estado/{pedidoId}")
+    public ResponseEntity<Void> cambiarEstado(@PathVariable Long pedidoId,
+                                              @RequestParam EstadoPedido estado){
+        pedidoService.cambiarEstado(pedidoId, estado);
+        return ResponseEntity.ok().build();
     }
 }

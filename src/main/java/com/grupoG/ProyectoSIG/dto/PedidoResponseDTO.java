@@ -15,8 +15,13 @@ public class PedidoResponseDTO {
     private Double latitudOrigen;
     private Double longitudOrigen;
     private String direccionEnvio;
+
     private Double latitudEnvio;
     private Double longitudEnvio;
+
+    private Double latitudDistribuidor;
+    private Double longitudDistribuidor;
+
     private String estado;
     private Long clienteId;
     private Long distribuidorId;
@@ -38,5 +43,7 @@ public class PedidoResponseDTO {
         this.clienteNombre = pedido.getCliente().getNombre();
         this.distribuidorId = pedido.getDistribuidor().getId();
         this.distribuidorNombre = pedido.getDistribuidor().getNombre();
+        this.latitudDistribuidor =pedido.getDistribuidor().getUbicacionActual().getLatitud();
+        this.longitudDistribuidor = pedido.getDistribuidor().getUbicacionActual().getLongitud();
     }
 }

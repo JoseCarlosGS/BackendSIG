@@ -1,5 +1,6 @@
 package com.grupoG.ProyectoSIG.controllers;
 
+import com.grupoG.ProyectoSIG.dto.EntregaResponseDTO;
 import com.grupoG.ProyectoSIG.dto.RutaDTO;
 import com.grupoG.ProyectoSIG.dto.UbicacionDTO;
 import com.grupoG.ProyectoSIG.models.Entrega;
@@ -74,8 +75,9 @@ public class EntregasController {
     }
 
     @GetMapping("/distribuidor/{distribuidorId}")
-    public ResponseEntity<List<Entrega>> obtenerEntregasPorDistribuidor(@PathVariable Long distribuidorId) {
-        return ResponseEntity.ok(entregaService.findByDistribuidorId(distribuidorId));
+    public ResponseEntity<List<EntregaResponseDTO>> obtenerEntregasPorDistribuidor(@PathVariable Long distribuidorId) {
+        return ResponseEntity.ok(entregaService.findByDistribuidorId(distribuidorId)
+                .stream().map(EntregaResponseDTO::new).toList());
     }
 
     @GetMapping("/{id}/ruta")
@@ -110,4 +112,5 @@ public class EntregasController {
     public ResponseEntity<List<Entrega>> obtenerEntregasCompletadas() {
         return ResponseEntity.ok(entregaService.findEntregasCompletadas());
     }
+
 } 
