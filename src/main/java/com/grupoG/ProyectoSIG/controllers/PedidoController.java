@@ -88,6 +88,11 @@ public class PedidoController {
 
         return ResponseEntity.ok(pedidoService.obtenerActivosPorDistribuidor(distribuidorId));
     }
+    @GetMapping("/cliente/disponibles/{clienteId}")
+    public ResponseEntity<List<PedidoResponseDTO>> obtenerDisponiblesPorCliente(@PathVariable Long clienteId){
+
+        return ResponseEntity.ok(pedidoService.obtenerActivosPorCliente(clienteId));
+    }
 
 
     @GetMapping("/cliente/{clienteId}")

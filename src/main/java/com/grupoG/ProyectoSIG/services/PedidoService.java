@@ -212,6 +212,15 @@ public class PedidoService {
         response.addAll(pedidoRepository.findByDistribuidorIdAndEstado(distribuidorId, EstadoPedido.EN_CAMINO));
         return response.stream().map(PedidoResponseDTO::new).toList();
     }
+    public List<PedidoResponseDTO> obtenerActivosPorCliente(Long clienteId){
+        if (distribuidorRepository.findById(clienteId).isEmpty()){
+            throw new RuntimeException("No se encontró un distribuidor con id: "+clienteId);
+        }
+        List<Pedido> response = new ArrayList<>();
+        response.addAll(pedidoRepository.findByClienteIdAndEstado(clienteId, EstadoPedido.ACEPTADO));
+        response.addAll(pedidoRepository.findByClienteIdAndEstado(clienteId, EstadoPedido.EN_CAMINO));
+        return response.stream().map(PedidoResponseDTO::new).toList();
+    }
 
     public List<PedidoResponseDTO> obtenerPorClienteId(Long clienteId){
         if (distribuidorRepository.findById(clienteId).isEmpty()){
