@@ -1,0 +1,14 @@
+# Ignorar archivos de configuración y compilación innecesarios
+target/
+.idea/
+*.iml
+*.log
+*.class
+*.jar
+*.war
+*.db
+*.DS_Store
+.vscode/
+.env
+*.bak
+node_modules/
