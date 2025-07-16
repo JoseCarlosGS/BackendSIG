@@ -33,6 +33,8 @@ public class PedidoService {
     @Autowired
     private DistribuidorRepository distribuidorRepository;
 
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private DistribuidorService distribuidorService;
@@ -213,7 +215,7 @@ public class PedidoService {
         return response.stream().map(PedidoResponseDTO::new).toList();
     }
     public List<PedidoResponseDTO> obtenerActivosPorCliente(Long clienteId){
-        if (distribuidorRepository.findById(clienteId).isEmpty()){
+        if (clienteRepository.findById(clienteId).isEmpty()){
             throw new RuntimeException("No se encontró un distribuidor con id: "+clienteId);
         }
         List<Pedido> response = new ArrayList<>();
