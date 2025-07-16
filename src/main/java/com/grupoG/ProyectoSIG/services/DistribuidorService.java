@@ -47,7 +47,6 @@ public class DistribuidorService {
         if (distribuidorRepository.existsByEmail(entity.getEmail())){
             throw new IllegalArgumentException("El correo ya está en uso");
         }
-        entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         Distribuidor distribuidor = new Distribuidor();
         Ubicacion ubicacion = new Ubicacion();
 
