@@ -67,6 +67,54 @@ public class RutaService {
         return ruta;
     }
     public RutaDTO calcularRuta(Ubicacion origen, Ubicacion destino) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", apiKey);
+
+            Map<String, Object> body = new HashMap<>();
+            body.put("coordinates", List.of(
+                    List.of(origen.getLongitud(), origen.getLatitud()),
+                    List.of(destino.getLongitud(), destino.getLatitud())
+            ));
+            body.put("radiuses", List.of(5000.0, 5000.0));
+
+            HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+
+            ResponseEntity<Map> response = restTemplate.postForEntity(
+                    "https://api.openrouteservice.org/v2/directions/driving-car",
+                    entity,
+                    Map.class
+            );
+
+            Map<String, Object> route = (Map<String, Object>) ((List<?>) response.getBody().get("routes")).get(0);
+            Map<String, Object> summary = (Map<String, Object>) route.get("summary");
+
+            double distanciaKm = ((Number) summary.get("distance")).doubleValue() / 1000.0;
+            double duracionMin = ((Number) summary.get("duration")).doubleValue() / 60.0;
+
+            String geometry = (String) route.get("geometry");
+            List<UbicacionDTO> coordenadas = decodePolyline(geometry);
+
+            RutaDTO resp = new RutaDTO();
+            resp.setCoordenadas(coordenadas);
+            resp.setDistanciaKm(distanciaKm);
+            resp.setDuracionMin(duracionMin);
+            return resp;
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new RuntimeException("Las coordenadas no estan cercas de una ruta valida");
+            }
+            throw e;
+        } catch (Exception e){
+            throw new RuntimeException("Error al calcular la ruta: " + e.getMessage());
+        }
+    }
+
+
+
+
+    /*public RutaDTO calcularRuta(Ubicacion origen, Ubicacion destino) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", apiKey);

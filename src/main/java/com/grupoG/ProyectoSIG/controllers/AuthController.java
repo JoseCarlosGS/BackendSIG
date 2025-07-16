@@ -63,9 +63,10 @@ public class AuthController {
 
         // Verificación de estado
         if (role.equals("ROLE_CLIENTE")) {
-            Cliente cliente = clienteService.findById(idUser).orElseThrow();
+            Cliente cliente = clienteService.findById(idUser);
         } else if (role.equals("ROLE_DISTRIBUIDOR")) {
-            Distribuidor distribuidor = distribuidorService.findById(idUser).orElseThrow();
+            Distribuidor distribuidor = distribuidorService.findById(idUser);
+            if (!distribuidor.getDisponible()) distribuidorService.cambiarDisponibilidad(distribuidor.getId());
         }
 
         Map<String, Object> response = new HashMap<>();
